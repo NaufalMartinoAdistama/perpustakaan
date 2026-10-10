@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrasi Akun Siswa | SIMPEL-LAB</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E40AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'/><line x1='8' y1='21' x2='16' y2='21'/><line x1='12' y1='17' x2='12' y2='21'/></svg>" type="image/svg+xml">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-sky-50 to-white text-slate-800 min-h-screen flex items-center justify-center p-4 relative overflow-y-auto py-12">
+
+  <!-- Background Glows -->
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-blue-300/30 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-sky-200/40 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="relative w-full max-w-lg my-auto">
+    
+    <!-- Logo & Header -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-400 text-white shadow-lg shadow-blue-500/25 mb-2">
+        <i data-lucide="graduation-cap" class="w-7 h-7"></i>
+      </div>
+      <h1 class="text-2xl font-black text-slate-900 tracking-tight">Daftar Akun Siswa Lab</h1>
+      <p class="text-xs text-slate-500 mt-0.5">Lengkapi data diri Anda untuk mendapatkan hak peminjaman barang laboratorium</p>
+    </div>
+
+    <!-- Register Card -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl shadow-blue-900/5 border border-blue-100 p-6 sm:p-10">
+      
+      <!-- Alert Error -->
+      <div id="register-alert" class="hidden mb-5 p-3.5 rounded-xl text-xs flex items-start gap-2.5 bg-rose-50 text-rose-800 border border-rose-200">
+        <i data-lucide="alert-octagon" class="w-4 h-4 mt-0.5 shrink-0 text-rose-600"></i>
+        <span id="register-alert-text">-</span>
+      </div>
+
+      <form id="form-register" class="space-y-4">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Siswa (NIS) <span class="text-rose-500">*</span></label>
+            <input 
+              type="text" 
+              id="reg-nis" 
+              required 
+              placeholder="Contoh: 20241005" 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none font-mono"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+            <input 
+              type="text" 
+              id="reg-kelas" 
+              required 
+              placeholder="Contoh: XII RPL 1" 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
+          <input 
+            type="text" 
+            id="reg-nama" 
+            required 
+            placeholder="Masukkan nama lengkap Anda..." 
+            class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+          >
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kompetensi Keahlian / Jurusan <span class="text-rose-500">*</span></label>
+            <select 
+              id="reg-jurusan" 
+              required 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+            >
+              <option value="Rekayasa Perangkat Lunak">Rekayasa Perangkat Lunak (RPL)</option>
+              <option value="Teknik Komputer & Jaringan">Teknik Komputer & Jaringan (TKJ)</option>
+              <option value="Multimedia / DKV">Desain Komunikasi Visual (DKV)</option>
+              <option value="Sistem Informasi Jaringan">Sistem Informasi Jaringan (SIJA)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">No. WhatsApp / HP Aktif <span class="text-rose-500">*</span></label>
+            <input 
+              type="text" 
+              id="reg-hp" 
+              required 
+              placeholder="Contoh: 0812-3456-7890" 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Password <span class="text-rose-500">*</span></label>
+            <input 
+              type="password" 
+              id="reg-password" 
+              required 
+              minlength="6"
+              placeholder="Minimal 6 karakter" 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Konfirmasi Password <span class="text-rose-500">*</span></label>
+            <input 
+              type="password" 
+              id="reg-confirm-password" 
+              required 
+              minlength="6"
+              placeholder="Ulangi password" 
+              class="w-full px-3 py-2 text-xs bg-blue-50/50 border border-blue-200/80 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none"
+            >
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <label class="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+            <input type="checkbox" required class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+            <span>Saya menyetujui seluruh tata tertib dan mematuhi sanksi ganti rugi/denda atas peralatan lab yang dipinjam.</span>
+          </label>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 mt-4 hover:scale-[1.01]"
+        >
+          <i data-lucide="user-check" class="w-4 h-4"></i>
+          <span>Daftarkan Akun Siswa</span>
+        </button>
+
+      </form>
+
+      <div class="mt-6 text-center text-xs text-slate-500">
+        Sudah memiliki akun terdaftar? 
+        <a href="login.html" class="font-bold text-brand-600 hover:text-brand-800 underline ml-0.5">Masuk di Sini</a>
+      </div>
+
+    </div>
+
+    <!-- Back to Login -->
+    <div class="text-center mt-6">
+      <a href="login.html" class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+        <span>Kembali ke Halaman Login</span>
+      </a>
+    </div>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    lucide.createIcons();
+
+    document.getElementById('form-register').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nis = document.getElementById('reg-nis').value.trim();
+      const nama = document.getElementById('reg-nama').value.trim();
+      const kelas = document.getElementById('reg-kelas').value.trim();
+      const jurusan = document.getElementById('reg-jurusan').value;
+      const hp = document.getElementById('reg-hp').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+      const alertBox = document.getElementById('register-alert');
+      const alertText = document.getElementById('register-alert-text');
+
+      if (password !== confirmPassword) {
+        alertText.textContent = 'Password dan Konfirmasi Password tidak cocok!';
+        alertBox.classList.remove('hidden');
+        return;
+      }
+
+      const result = window.authService.registerStudent({
+        nis, name: nama, grade: kelas, major: jurusan, phone: hp, password
+      });
+
+      if (result.success) {
+        window.location.href = 'login.html?registered=1';
+      } else {
+        alertText.textContent = result.message;
+        alertBox.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

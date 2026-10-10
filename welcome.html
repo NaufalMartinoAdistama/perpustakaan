@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPEL-LAB | Sistem Peminjaman Barang Laboratorium Komputer</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'/><line x1='8' y1='21' x2='16' y2='21'/><line x1='12' y1='17' x2='12' y2='21'/></svg>" type="image/svg+xml">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gradient-to-b from-blue-50/80 via-sky-50/30 to-white text-slate-800 antialiased min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-sky-600 text-white text-xs py-2 px-4 text-center font-medium shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+      <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-wider">Jam Operasional</span>
+      <span>Laboratorium Buka Senin - Jumat: 07.30 - 16.00 WIB &bull; Harap mengembalikan perangkat tepat waktu</span>
+    </div>
+  </div>
+
+  <!-- ==================== NAVIGATION BAR ==================== -->
+  <header class="sticky top-0 z-50 glass-header border-b border-blue-100/80 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center gap-2.5 sm:gap-3 group">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-400 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform shrink-0">
+          <i data-lucide="monitor" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+        </div>
+        <div>
+          <span class="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-1">
+            SIMPEL<span class="text-blue-600">LAB</span>
+          </span>
+          <span class="text-[9px] sm:text-[10px] text-blue-600 font-bold block -mt-1 tracking-wider uppercase">Lab Komputer & Jaringan</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+        <a href="#beranda" class="text-blue-600 hover:text-blue-700 transition-colors">Beranda</a>
+        <a href="#fitur" class="hover:text-blue-600 transition-colors">Fitur Unggulan</a>
+        <a href="#alur" class="hover:text-blue-600 transition-colors">Alur Pinjam</a>
+        <a href="#katalog" class="hover:text-blue-600 transition-colors">Kategori Alat</a>
+        <a href="#aturan" class="hover:text-blue-600 transition-colors">Tata Tertib</a>
+      </nav>
+
+      <!-- Desktop Auth Action Buttons -->
+      <div id="nav-auth-container" class="hidden sm:flex items-center gap-3">
+        <a 
+          href="login.html" 
+          class="px-4 py-2 text-xs font-bold text-slate-700 hover:text-blue-600 bg-white hover:bg-blue-50 border border-slate-200/80 hover:border-blue-200 rounded-xl transition-all shadow-xs"
+        >
+          Masuk / Login
+        </a>
+        <a 
+          href="register.html" 
+          class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-500/25 hover:scale-[1.02] flex items-center gap-1.5"
+        >
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+          <span>Daftar Siswa</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Toggle Button -->
+      <div class="flex items-center gap-2 md:hidden">
+        <button id="mobile-menu-btn" aria-label="Menu" class="p-2 rounded-xl text-slate-700 hover:text-blue-600 hover:bg-blue-50 border border-slate-200 focus:outline-none transition-colors">
+          <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-blue-100 bg-white/98 backdrop-blur-xl px-4 py-5 space-y-4 shadow-2xl transition-all">
+      <nav class="flex flex-col space-y-2 font-semibold text-sm text-slate-700">
+        <a href="#beranda" class="mobile-nav-link px-3.5 py-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+          <span>Beranda</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </a>
+        <a href="#fitur" class="mobile-nav-link px-3.5 py-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+          <span>Fitur Unggulan</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </a>
+        <a href="#alur" class="mobile-nav-link px-3.5 py-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+          <span>Alur Pinjam</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </a>
+        <a href="#katalog" class="mobile-nav-link px-3.5 py-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+          <span>Kategori Alat</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </a>
+        <a href="#aturan" class="mobile-nav-link px-3.5 py-2.5 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center justify-between">
+          <span>Tata Tertib Lab</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </a>
+      </nav>
+
+      <div id="mobile-auth-container" class="pt-3 border-t border-blue-100 flex flex-col gap-2">
+        <a href="login.html" class="w-full py-2.5 text-center text-xs font-bold text-slate-700 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+          Masuk ke Portal Login
+        </a>
+        <a href="register.html" class="w-full py-2.5 text-center text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/25 transition-colors">
+          Daftar Akun Siswa Baru
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="beranda" class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+    <!-- Ambient glowing orbs -->
+    <div class="absolute top-1/4 -left-32 w-96 h-96 bg-blue-400/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-10 -right-32 w-96 h-96 bg-sky-300/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <!-- Left Hero Content -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/80 border border-blue-200 text-blue-800 text-xs font-bold shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            <span>Sistem Peminjaman Inventaris Lab Komputer Modern</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Pinjam Perangkat Lab Komputer Jadi <span class="text-blue-600 underline decoration-sky-300 decoration-wavy decoration-2">Mudah, Cepat</span> & Transparan.
+          </h1>
+
+          <p class="text-base text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            Fasilitas digitalisasi peminjaman laptop, proyektor multimedia, router jaringan, dan alat praktikum laboratorium komputer. Kelola pengajuan, cek ketersediaan stok, hingga verifikasi pengembalian bebas ribet.
+          </p>
+
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+            <a 
+              href="login.html" 
+              class="w-full sm:w-auto px-7 py-3.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2"
+            >
+              <i data-lucide="log-in" class="w-4 h-4"></i>
+              <span>Mulai Peminjaman Sekarang</span>
+            </a>
+
+            <a 
+              href="#alur" 
+              class="w-full sm:w-auto px-6 py-3.5 text-sm font-bold text-slate-700 bg-white hover:bg-blue-50/80 border border-blue-200/80 rounded-2xl transition-all shadow-xs flex items-center justify-center gap-2 hover:border-blue-300"
+            >
+              <i data-lucide="help-circle" class="w-4 h-4 text-blue-600"></i>
+              <span>Lihat Prosedur Pinjam</span>
+            </a>
+          </div>
+
+          <!-- Feature badges -->
+          <div class="pt-6 grid grid-cols-3 gap-3 border-t border-blue-100/90 text-left">
+            <div>
+              <div class="text-xl font-bold text-slate-900" id="hero-total-items">45+ Unit</div>
+              <div class="text-xs text-slate-500 mt-0.5">Perangkat Siap Pakai</div>
+            </div>
+            <div>
+              <div class="text-xl font-bold text-blue-600">100% Digital</div>
+              <div class="text-xs text-slate-500 mt-0.5">Tanpa Formulir Kertas</div>
+            </div>
+            <div>
+              <div class="text-xl font-bold text-slate-900">&le; 5 Menit</div>
+              <div class="text-xs text-slate-500 mt-0.5">Verifikasi Cepat di Meja Lab</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Hero Mockup Card Showcase -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative mx-auto max-w-md lg:max-w-none">
+            
+            <!-- Main Preview Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-2xl shadow-blue-900/10 border border-blue-100 relative z-10 hover-lift">
+              <div class="flex items-center justify-between pb-4 border-b border-blue-50">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <i data-lucide="laptop" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h2 class="text-sm font-bold text-slate-900">Laptop ASUS ROG Strix</h2>
+                    <p class="text-[11px] text-slate-400">Kode: BRG-001 &bull; Kategori: Laptop</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-200">
+                  Tersedia 5 Unit
+                </span>
+              </div>
+
+              <!-- Quick spec / details -->
+              <div class="py-4 space-y-2.5 text-xs text-slate-600">
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                  <span class="text-slate-400">Kondisi Fisik:</span>
+                  <span class="font-bold text-slate-800">Sangat Baik (100% Normal)</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                  <span class="text-slate-400">Maksimal Pinjam:</span>
+                  <span class="font-bold text-blue-600">3 Hari Kerja</span>
+                </div>
+                <div class="flex justify-between py-1">
+                  <span class="text-slate-400">Peruntukan:</span>
+                  <span class="font-bold text-slate-800">Praktikum Coding & Render 3D</span>
+                </div>
+              </div>
+
+              <!-- Action Card Simulation -->
+              <div class="mt-2 p-3.5 bg-blue-50/70 rounded-2xl border border-blue-100 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
+                    ✓
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-800">Status Peminjaman Mandiri</div>
+                    <div class="text-[11px] text-blue-600">Pengajuan dapat dilakukan via Portal Siswa</div>
+                  </div>
+                </div>
+                <a href="login.html" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs">
+                  Ajukan
+                </a>
+              </div>
+            </div>
+
+            <!-- Floating Decoration Card 1 -->
+            <div class="hidden sm:flex absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-blue-100 items-center gap-3 z-20">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-900">Verifikasi Resmi Petugas</div>
+                <div class="text-[11px] text-slate-500">Cek fisik alat sebelum serah terima</div>
+              </div>
+            </div>
+
+            <!-- Floating Decoration Card 2 -->
+            <div class="hidden sm:flex absolute -top-5 -right-5 bg-white/95 backdrop-blur-md rounded-2xl p-3 px-4 shadow-xl border border-blue-100 items-center gap-2.5 z-20">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
+              <span class="text-xs font-bold text-slate-800">Stok Sinkron Real-time</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== STATS BANNER ==================== -->
+  <section class="py-8 bg-white border-y border-blue-100/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        
+        <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/60">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 mx-auto mb-2 flex items-center justify-center">
+            <i data-lucide="boxes" class="w-5 h-5"></i>
+          </div>
+          <div class="text-2xl font-black text-slate-900" id="stat-total-barang">45 Unit</div>
+          <div class="text-xs text-slate-500 mt-0.5">Total Inventaris Lab</div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/60">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 mx-auto mb-2 flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          </div>
+          <div class="text-2xl font-black text-emerald-600" id="stat-barang-ready">38 Siap</div>
+          <div class="text-xs text-slate-500 mt-0.5">Kondisi Bagus Siap Pakai</div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/60">
+          <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 mx-auto mb-2 flex items-center justify-center">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <div class="text-2xl font-black text-slate-900" id="stat-siswa-aktif">3+ Siswa</div>
+          <div class="text-xs text-slate-500 mt-0.5">Anggota Lab Terdaftar</div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/60">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 mx-auto mb-2 flex items-center justify-center">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div class="text-2xl font-black text-slate-900">3 Role Akses</div>
+          <div class="text-xs text-slate-500 mt-0.5">Admin, Petugas & Siswa</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FITUR 3 ROLE ==================== -->
+  <section id="fitur" class="py-20 bg-gradient-to-b from-white to-blue-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">Multi-Role Terintegrasi</span>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Satu Platform Untuk Tiga Peran Berbeda</h2>
+        <p class="text-sm text-slate-600">Sistem memisahkan alur kerja sesuai tanggung jawab masing-masing demi menjaga keamanan dan akuntabilitas inventaris lab.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Role 1: Admin Lab -->
+        <div class="bg-white rounded-3xl p-8 border border-blue-100 shadow-lg shadow-blue-900/5 hover-lift flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 mb-6">
+              <i data-lucide="shield-check" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider mb-2">Role: Administrator</div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Admin Laboratorium</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+              Memiliki wewenang penuh dalam mengelola master data barang, akun siswa, staf teknisi, rekapan denda, serta pencetakan laporan resmi berkop surat.
+            </p>
+
+            <ul class="space-y-2.5 text-xs text-slate-600 pb-6 border-b border-slate-100">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Kelola CRUD Data Barang & Stok</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Manajemen Siswa & Hak Peminjaman</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Cetak Rekapitulasi Laporan Berkop</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-6">
+            <a href="login.html" class="block w-full py-2.5 text-center text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+              Masuk Sebagai Admin &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Role 2: Petugas Lab -->
+        <div class="bg-white rounded-3xl p-8 border border-sky-200/80 shadow-lg shadow-sky-900/5 hover-lift flex flex-col justify-between relative">
+          <div class="absolute -top-3 right-6 px-3 py-1 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-[10px] uppercase rounded-full shadow-sm tracking-wider">
+            Operasional Lab
+          </div>
+
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-lg shadow-sky-500/25 mb-6">
+              <i data-lucide="clipboard-check" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-block px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-800 text-[10px] font-bold uppercase tracking-wider mb-2">Role: Petugas Lab</div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Petugas & Teknisi Lab</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+              Menangani transaksi harian langsung di meja operasional lab, memeriksa kondisi fisik perangkat, memproses serah terima, dan mencatat denda.
+            </p>
+
+            <ul class="space-y-2.5 text-xs text-slate-600 pb-6 border-b border-slate-100">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-sky-600 shrink-0"></i>
+                <span>Entri Peminjaman Meja Lab Cepat</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-sky-600 shrink-0"></i>
+                <span>Verifikasi Pengembalian & Kondisi Fisik</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-sky-600 shrink-0"></i>
+                <span>Perhitungan Denda Keterlambatan Otomatis</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-6">
+            <a href="login.html" class="block w-full py-2.5 text-center text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 rounded-xl transition-colors">
+              Masuk Sebagai Petugas &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Role 3: Siswa -->
+        <div class="bg-white rounded-3xl p-8 border border-blue-100 shadow-lg shadow-blue-900/5 hover-lift flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-400 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 mb-6">
+              <i data-lucide="graduation-cap" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider mb-2">Role: Siswa / Peminjam</div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Siswa & Peserta Didik</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+              Melihat katalog perangkat lab yang tersedia secara real-time, mengajukan peminjaman mandiri secara online, dan memantau status pengembalian.
+            </p>
+
+            <ul class="space-y-2.5 text-xs text-slate-600 pb-6 border-b border-slate-100">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Eksplorasi Katalog Alat Online</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Pengajuan Pinjam Mandiri Kapan Saja</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-blue-600 shrink-0"></i>
+                <span>Pantau Riwayat Pinjam & Status Barang</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-6">
+            <a href="login.html" class="block w-full py-2.5 text-center text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+              Masuk Sebagai Siswa &rarr;
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== ALUR PEMINJAMAN ==================== -->
+  <section id="alur" class="py-20 bg-white border-y border-blue-100/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">SOP Peminjaman</span>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">4 Langkah Praktis Meminjam Alat Lab</h2>
+        <p class="text-sm text-slate-600">Ikuti prosedur standar operasional peminjaman berikut agar proses serah terima berjalan lancar dan terverifikasi.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <!-- Step 1 -->
+        <div class="p-6 rounded-2xl bg-blue-50/50 border border-blue-100 hover-lift relative">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-blue-500/25">
+            1
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">Login / Daftar Akun</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Masuk dengan NIS Anda, atau daftarkan akun siswa baru melalui halaman registrasi resmi SIMPEL-LAB.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-6 rounded-2xl bg-blue-50/50 border border-blue-100 hover-lift relative">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-blue-500/25">
+            2
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">Pilih Barang di Katalog</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Pilih perangkat yang dibutuhkan, tentukan tanggal pinjam dan rencana pengembalian, serta isi keperluan praktikum.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-6 rounded-2xl bg-blue-50/50 border border-blue-100 hover-lift relative">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-blue-500/25">
+            3
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">Ambil di Meja Lab</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Datangi ruang lab komputer untuk verifikasi identitas, pengecekan fisik perangkat bersama petugas, dan serah terima unit.
+          </p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p-6 rounded-2xl bg-blue-50/50 border border-blue-100 hover-lift relative">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center mb-4 shadow-md shadow-emerald-500/25">
+            4
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">Kembalikan Tepat Waktu</h3>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Kembalikan perangkat sebelum tanggal jatuh tempo. Petugas akan mengecek kelengkapan unit dan menyelesaikan transaksi.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== KATEGORI BARANG PREVIEW ==================== -->
+  <section id="katalog" class="py-20 bg-gradient-to-b from-blue-50/40 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-bold uppercase tracking-wider">Inventaris Lab Lengkap</span>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Kategori Perangkat Laboratorium Siap Pakai</h2>
+        <p class="text-sm text-slate-600">Beragam perangkat laboratorium komputer untuk mendukung kebutuhan belajar mengajar dan uji kompetensi kejuruan.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Kategori 1 -->
+        <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover-lift">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+            <i data-lucide="laptop" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-1">Laptop & Komputer</h3>
+          <p class="text-xs text-slate-500 mb-4">ASUS ROG Gaming, Dell Latitude, PC Workstation untuk praktikum desain & coding.</p>
+          <span class="text-xs font-bold text-blue-600 flex items-center gap-1">15 Unit Siap Pakai</span>
+        </div>
+
+        <!-- Kategori 2 -->
+        <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover-lift">
+          <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
+            <i data-lucide="network" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-1">Jaringan & Routing</h3>
+          <p class="text-xs text-slate-500 mb-4">Router Mikrotik RB750, Switch TP-Link Gigabit, Access Point Ubiquiti untuk simulasi jaringan.</p>
+          <span class="text-xs font-bold text-sky-600 flex items-center gap-1">12 Unit Siap Pakai</span>
+        </div>
+
+        <!-- Kategori 3 -->
+        <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover-lift">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+            <i data-lucide="projector" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-1">Multimedia & Display</h3>
+          <p class="text-xs text-slate-500 mb-4">Proyektor Epson EB-X400, Layar Tripod, Kabel HDMI High-Speed untuk presentasi kelas.</p>
+          <span class="text-xs font-bold text-indigo-600 flex items-center gap-1">3 Unit Siap Pakai</span>
+        </div>
+
+        <!-- Kategori 4 -->
+        <div class="bg-white rounded-2xl p-6 border border-blue-100 shadow-sm hover-lift">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+            <i data-lucide="wrench" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-1">Perkakas & Tools Lab</h3>
+          <p class="text-xs text-slate-500 mb-4">Tang Crimping RJ45, LAN Tester, Obeng Presisi, Solder Kit untuk perakitan hardware.</p>
+          <span class="text-xs font-bold text-blue-600 flex items-center gap-1">15 Unit Siap Pakai</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== TATA TERTIB ==================== -->
+  <section id="aturan" class="py-16 bg-blue-50/50 border-t border-blue-100/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="bg-white rounded-3xl p-8 sm:p-10 border border-blue-100 shadow-xl shadow-blue-900/5">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Tata Tertib & Ketentuan Peminjaman</h3>
+            <p class="text-xs text-slate-500">Wajib dipatuhi oleh seluruh siswa dan peminjam peralatan laboratorium</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+            <i data-lucide="clock" class="w-4 h-4 text-blue-600 mt-0.5 shrink-0"></i>
+            <div>
+              <span class="font-bold text-slate-800 block mb-0.5">Batas Waktu Maksimal 3 Hari</span>
+              Peminjaman berlaku maksimal 3 hari kerja sejak serah terima perangkat disetujui.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-rose-600 mt-0.5 shrink-0"></i>
+            <div>
+              <span class="font-bold text-slate-800 block mb-0.5">Denda Keterlambatan Rp 5.000 / Hari</span>
+              Keterlambatan pengembalian dikenakan denda akumulatif per hari keterlambatan.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 mt-0.5 shrink-0"></i>
+            <div>
+              <span class="font-bold text-slate-800 block mb-0.5">Tanggung Jawab Kerusakan Fisik</span>
+              Kerusakan akibat kelalaian pemakaian wajib diganti sesuai dengan nilai unit bersangkutan.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+            <i data-lucide="user-x" class="w-4 h-4 text-slate-600 mt-0.5 shrink-0"></i>
+            <div>
+              <span class="font-bold text-slate-800 block mb-0.5">Dilarang Memindahtangankan Alat</span>
+              Peralatan hanya boleh digunakan oleh siswa yang terdaftar dalam bukti peminjaman resmi.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== CALL TO ACTION ==================== -->
+  <section class="py-16 bg-gradient-to-r from-blue-700 via-blue-600 to-sky-600 text-white relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
+      <h2 class="text-3xl font-extrabold tracking-tight">Siap Memulai Peminjaman Alat Lab Komputer?</h2>
+      <p class="text-blue-100 text-sm max-w-xl mx-auto">
+        Masuk menggunakan akun NIS siswa Anda atau login sebagai staf teknisi lab untuk memproses data inventaris sekarang.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <a 
+          href="login.html" 
+          class="w-full sm:w-auto px-8 py-3.5 bg-white text-blue-700 hover:bg-blue-50 font-bold text-xs rounded-2xl shadow-xl transition-all hover:scale-105"
+        >
+          Masuk ke Halaman Login &rarr;
+        </a>
+        <a 
+          href="register.html" 
+          class="w-full sm:w-auto px-7 py-3.5 bg-blue-800/60 hover:bg-blue-800 text-white font-bold text-xs rounded-2xl border border-white/30 transition-all"
+        >
+          Daftarkan Akun Siswa Baru
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-white border-t border-blue-100 py-12 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 pb-8 border-b border-slate-100">
+        
+        <div class="space-y-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">
+              <i data-lucide="monitor" class="w-4 h-4"></i>
+            </div>
+            <span class="text-base font-black text-slate-900 tracking-tight">SIMPEL<span class="text-blue-600">LAB</span></span>
+          </div>
+          <p class="text-slate-500 leading-relaxed text-[11px]">
+            Sistem Peminjaman Barang Laboratorium Komputer dan Jaringan. Dirancang untuk transparansi dan kemudahan inventaris akademik.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 mb-3 uppercase tracking-wider text-[11px]">Navigasi Utama</h4>
+          <ul class="space-y-2 text-[11px]">
+            <li><a href="#beranda" class="hover:text-blue-600">Beranda Welcome</a></li>
+            <li><a href="#fitur" class="hover:text-blue-600">Fitur 3 Role</a></li>
+            <li><a href="#alur" class="hover:text-blue-600">Prosedur Pinjam</a></li>
+            <li><a href="#katalog" class="hover:text-blue-600">Katalog Alat Lab</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 mb-3 uppercase tracking-wider text-[11px]">Portal Akses</h4>
+          <ul class="space-y-2 text-[11px]">
+            <li><a href="login.html" class="hover:text-blue-600">Login Administrator</a></li>
+            <li><a href="login.html" class="hover:text-blue-600">Login Petugas Lab</a></li>
+            <li><a href="login.html" class="hover:text-blue-600">Login Siswa</a></li>
+            <li><a href="register.html" class="hover:text-blue-600">Pendaftaran Akun Baru</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 mb-3 uppercase tracking-wider text-[11px]">Jam Pelayanan Lab</h4>
+          <p class="text-[11px] text-slate-600 mb-2">Gedung Lab Komputer Lt. 2</p>
+          <p class="text-[11px] text-slate-500">Senin - Kamis: 07.30 - 16.00 WIB</p>
+          <p class="text-[11px] text-slate-500">Jumat: 07.30 - 15.00 WIB</p>
+          <p class="text-[11px] text-rose-500 mt-1 font-semibold">Sabtu & Minggu: Tutup</p>
+        </div>
+
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <p>&copy; 2026 SIMPEL-LAB &bull; Laboratorium Komputer. All rights reserved.</p>
+        <p class="text-slate-400">Dirancang dengan tema modern Biru Muda & Putih</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Mobile Hamburger Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+    
+
+    // Dynamically update stats from LabDB if available
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        if (window.labDB) {
+          const stats = window.labDB.getDashboardStats();
+          const itemsEl = document.getElementById('hero-total-items');
+          const statTotalEl = document.getElementById('stat-total-barang');
+          const statReadyEl = document.getElementById('stat-barang-ready');
+          const statStudentsEl = document.getElementById('stat-siswa-aktif');
+
+          if (itemsEl) itemsEl.textContent = `${stats.totalItems} Unit`;
+          if (statTotalEl) statTotalEl.textContent = `${stats.totalItems} Unit`;
+          if (statReadyEl) statReadyEl.textContent = `${stats.totalAvailable} Siap`;
+          if (statStudentsEl) statStudentsEl.textContent = `${stats.activeStudents} Siswa`;
+        }
+
+        // Check if user is already logged in
+        if (window.authService) {
+          const session = window.authService.getSession();
+          if (session) {
+            const container = document.getElementById('nav-auth-container');
+            if (container) {
+              const roleFolder = session.role === 'admin' ? 'admin' : (session.role === 'petugas' ? 'petugas' : 'siswa');
+              container.innerHTML = `
+                <div class="flex items-center gap-2 bg-blue-50/80 border border-blue-200/80 px-3 py-1.5 rounded-xl">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="text-xs font-bold text-slate-800 truncate max-w-[120px]">${session.name.split(' ')[0]}</span>
+                  <span class="text-[10px] uppercase font-bold text-blue-700 bg-white px-1.5 py-0.5 rounded border border-blue-100">${session.role}</span>
+                </div>
+                <a 
+                  href="${roleFolder}/index.html" 
+                  class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5"
+                >
+                  <span>Dashboard Saya</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+              `;
+              lucide.createIcons();
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Welcome page init error:', e);
+      }
+    });
+  </script>
+</body>
+</html>

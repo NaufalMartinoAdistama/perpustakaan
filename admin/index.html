@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | SIMPEL-LAB</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E40AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'/><line x1='8' y1='21' x2='16' y2='21'/><line x1='12' y1='17' x2='12' y2='21'/></svg>" type="image/svg+xml">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+              400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+              800: '#1e40af', 900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-blue-50/30 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- ==================== ADMIN SIDEBAR ==================== -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white text-slate-700 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto flex flex-col shadow-lg shadow-blue-900/5 border-r border-blue-100">
+      
+      <!-- Brand Logo -->
+      <div class="h-16 flex items-center justify-between px-6 bg-gradient-to-r from-blue-50/70 to-white border-b border-blue-100">
+        <a href="#dashboard" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
+              SIMPEL<span class="text-blue-600">LAB</span>
+            </span>
+            <span class="text-[10px] text-blue-600 block -mt-1 font-bold tracking-wide uppercase">Admin Panel</span>
+          </div>
+        </a>
+        <button id="close-sidebar-btn" class="md:hidden text-slate-400 hover:text-slate-700 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- User Info Badge in Sidebar -->
+      <div class="p-3 mx-3 my-3 rounded-2xl bg-blue-50/80 border border-blue-100 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+          AD
+        </div>
+        <div class="overflow-hidden">
+          <div class="text-xs font-bold text-slate-800 truncate">Budi Santoso, S.Kom</div>
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+            <span class="text-[11px] text-blue-700 font-medium">Kepala Laboratorium</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Links -->
+      <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5" id="sidebar-menu">
+        <a href="#dashboard" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/25">
+          <div class="flex items-center gap-3">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Dashboard Admin</span>
+          </div>
+        </a>
+        <a href="#barang" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="box" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Kelola Data Barang</span>
+          </div>
+        </a>
+        <a href="#siswa" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Kelola Data Siswa</span>
+          </div>
+        </a>
+        <a href="#petugas" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Kelola Petugas Lab</span>
+          </div>
+        </a>
+        <a href="#peminjaman" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Transaksi Pinjam</span>
+          </div>
+        </a>
+        <a href="#pengembalian" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Transaksi Kembali</span>
+          </div>
+        </a>
+        <a href="#laporan" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="file-bar-chart" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Laporan & Cetak</span>
+          </div>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-4 border-t border-blue-100 bg-blue-50/40 space-y-2">
+        <button onclick="window.authService.logout('../login.html?logout=1')" class="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200/80 hover:border-rose-200 text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs">
+          <i data-lucide="log-out" class="w-4 h-4 text-rose-500"></i>
+          <span>Keluar (Logout)</span>
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 z-30 hidden md:hidden backdrop-blur-sm"></div>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-gradient-to-br from-blue-50/30 via-sky-50/10 to-white">
+
+      <!-- Top Header -->
+      <header id="top-header" class="h-16 glass-header border-b border-blue-100 sticky top-0 z-20 px-4 md:px-8 flex items-center justify-between shadow-xs">
+        
+        <div class="flex items-center gap-3">
+          <button id="open-sidebar-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          
+          <div>
+            <h1 id="page-title" class="text-lg font-bold text-slate-800 tracking-tight">Dashboard Administrator</h1>
+            <p id="page-subtitle" class="text-xs text-blue-600/80 font-medium hidden sm:block">Ringkasan performa dan inventaris laboratorium komputer</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+
+          <!-- Role Badge -->
+          <span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-bold text-xs flex items-center gap-1.5 shadow-xs">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>ADMIN</span>
+          </span>
+
+          <!-- Prominent Header Logout Button -->
+          <button onclick="window.authService.logout('../login.html?logout=1')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs" title="Keluar dari sistem">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <div class="relative">
+            <button id="btn-notifications" class="p-2 rounded-xl text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition-colors relative">
+              <i data-lucide="bell" class="w-5 h-5"></i>
+              <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white hidden"></span>
+            </button>
+            <div id="notifications-dropdown" class="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-white rounded-2xl shadow-2xl border border-blue-100 p-3 z-50 hidden">
+              <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-800">Notifikasi Terkini</span>
+                <span id="notif-count-text" class="text-[10px] bg-brand-100 text-brand-700 font-semibold px-2 py-0.5 rounded-full">0 Baru</span>
+              </div>
+              <div id="notifications-list" class="divide-y divide-slate-100 max-h-64 overflow-y-auto mt-1 space-y-1"></div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 md:p-8" id="main-content">
+        <!-- Rendered by admin.js -->
+      </main>
+
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <!-- 1. Modal Barang -->
+  <div id="modal-barang" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full z-10 max-h-[92vh] flex flex-col overflow-hidden transform transition-all">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center">
+            <i data-lucide="package-plus" class="w-4 h-4"></i>
+          </div>
+          <h3 id="modal-barang-title" class="text-base font-bold text-slate-800">Tambah Data Barang</h3>
+        </div>
+        <button onclick="closeModal('modal-barang')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-barang" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="barang-id">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kode Barang <span class="text-rose-500">*</span></label>
+            <input type="text" id="barang-kode" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none uppercase font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori <span class="text-rose-500">*</span></label>
+            <select id="barang-kategori" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Laptop">Laptop</option>
+              <option value="Multimedia">Multimedia</option>
+              <option value="Jaringan">Jaringan</option>
+              <option value="Toolkit">Toolkit</option>
+              <option value="Komponen">Komponen & IoT</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Barang <span class="text-rose-500">*</span></label>
+          <input type="text" id="barang-nama" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Total Stok Unit <span class="text-rose-500">*</span></label>
+            <input type="number" id="barang-stok" min="1" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kondisi Barang <span class="text-rose-500">*</span></label>
+            <select id="barang-kondisi" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Sangat Baik">Sangat Baik</option>
+              <option value="Baik">Baik</option>
+              <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+              <option value="Rusak">Rusak</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Lokasi Penyimpanan di Lab</label>
+          <input type="text" id="barang-lokasi" placeholder="Contoh: Lemari A3 - Lab Multimedia" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Spesifikasi / Kelengkapan Singkat</label>
+          <textarea id="barang-spesifikasi" rows="2" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-barang')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors shadow-sm flex items-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span>Simpan Data</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Modal Siswa -->
+  <div id="modal-siswa" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <h3 id="modal-siswa-title" class="text-base font-bold text-slate-800">Tambah Data Siswa</h3>
+        <button onclick="closeModal('modal-siswa')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-siswa" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="siswa-id">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">NIS <span class="text-rose-500">*</span></label>
+          <input type="text" id="siswa-nis" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Siswa <span class="text-rose-500">*</span></label>
+          <input type="text" id="siswa-nama" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+            <input type="text" id="siswa-kelas" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jurusan <span class="text-rose-500">*</span></label>
+            <select id="siswa-jurusan" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Rekayasa Perangkat Lunak">RPL</option>
+              <option value="Teknik Komputer & Jaringan">TKJ</option>
+              <option value="Multimedia / DKV">DKV</option>
+              <option value="Sistem Informasi Jaringan">SIJA</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">No. WhatsApp <span class="text-rose-500">*</span></label>
+          <input type="text" id="siswa-hp" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+          <select id="siswa-status" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="Aktif">Aktif</option>
+            <option value="Nonaktif">Nonaktif</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-siswa')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700">Simpan Siswa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Modal Petugas -->
+  <div id="modal-petugas" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <h3 id="modal-petugas-title" class="text-base font-bold text-slate-800">Tambah Akun Petugas</h3>
+        <button onclick="closeModal('modal-petugas')" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-petugas" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="petugas-id">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Petugas <span class="text-rose-500">*</span></label>
+          <input type="text" id="petugas-nip" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl font-mono">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Petugas <span class="text-rose-500">*</span></label>
+          <input type="text" id="petugas-nama" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Jabatan <span class="text-rose-500">*</span></label>
+          <input type="text" id="petugas-jabatan" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Shift</label>
+            <select id="petugas-shift" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+              <option value="Pagi (07.00 - 15.00)">Pagi (07.00 - 15.00)</option>
+              <option value="Siang (10.00 - 17.00)">Siang (10.00 - 17.00)</option>
+              <option value="Penuh (Full Shift)">Penuh (Full Shift)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kontak</label>
+            <input type="text" id="petugas-kontak" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-petugas')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700">Simpan Petugas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal Pinjam -->
+  <div id="modal-pinjam" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-brand-50">
+        <h3 class="text-base font-bold text-slate-800">Entri Peminjaman Barang</h3>
+        <button onclick="closeModal('modal-pinjam')" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-pinjam" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Siswa Peminjam <span class="text-rose-500">*</span></label>
+          <select id="pinjam-siswa-id" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Barang Lab <span class="text-rose-500">*</span></label>
+          <select id="pinjam-barang-id" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl"></select>
+          <div class="mt-1 text-xs text-slate-500 flex justify-between">
+            <span id="item-info-stock">Stok: -</span>
+            <span id="item-info-location">Lokasi: -</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Unit <span class="text-rose-500">*</span></label>
+            <input type="number" id="pinjam-qty" value="1" min="1" max="5" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tgl Pinjam <span class="text-rose-500">*</span></label>
+            <input type="date" id="pinjam-tanggal" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Batas Rencana Kembali <span class="text-rose-500">*</span></label>
+          <input type="date" id="pinjam-tenggat" required class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tujuan / Keperluan <span class="text-rose-500">*</span></label>
+          <textarea id="pinjam-keperluan" rows="2" required placeholder="Contoh: Praktikum Web UKK di Ruang 3" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-pinjam')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-brand-600 text-white rounded-xl hover:bg-brand-700">Simpan & Pinjamkan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Modal Kembali -->
+  <div id="modal-kembali" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-50">
+        <h3 class="text-base font-bold text-slate-800">Verifikasi Pengembalian Barang</h3>
+        <button onclick="closeModal('modal-kembali')" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-kembali" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="kembali-tx-id">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
+          <div class="flex justify-between font-bold">
+            <span id="kembali-info-id" class="font-mono text-slate-800">-</span>
+            <span id="kembali-info-barang" class="text-brand-700">-</span>
+          </div>
+          <div class="flex justify-between text-slate-500">
+            <span>Peminjam: <strong id="kembali-info-siswa" class="text-slate-800">-</strong></span>
+            <span>Tenggat: <strong id="kembali-info-tenggat" class="text-slate-800">-</strong></span>
+          </div>
+        </div>
+
+        <div id="kembali-alert-keterlambatan" class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs space-y-1 hidden">
+          <div class="text-rose-700 font-bold flex items-center gap-1.5">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span>Terlambat Dikembalikan!</span>
+          </div>
+          <p id="kembali-text-terlambat" class="text-rose-600"></p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kondisi Barang Kembali</label>
+            <select id="kembali-kondisi" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl">
+              <option value="Bagus">Bagus & Lengkap</option>
+              <option value="Rusak Ringan">Rusak Ringan</option>
+              <option value="Rusak Berat">Rusak Berat</option>
+              <option value="Hilang">Barang Hilang</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Total Denda (Rp)</label>
+            <input type="number" id="kembali-denda" value="0" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl font-bold text-rose-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan</label>
+          <textarea id="kembali-catatan" rows="2" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-kembali')" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">Konfirmasi Pengembalian</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Modal Confirm -->
+  <div id="modal-confirm" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full z-10 p-6 text-center">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 mx-auto flex items-center justify-center mb-3">
+        <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+      </div>
+      <h3 id="modal-confirm-title" class="text-base font-bold text-slate-800 mb-1">Konfirmasi</h3>
+      <p id="modal-confirm-message" class="text-xs text-slate-500 mb-5">Apakah Anda yakin?</p>
+      <div class="flex items-center justify-center gap-2.5">
+        <button type="button" onclick="closeModal('modal-confirm')" class="w-1/2 px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-xl">Batal</button>
+        <button type="button" id="modal-confirm-btn-yes" class="w-1/2 px-4 py-2 text-xs font-semibold text-white bg-rose-600 rounded-xl">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Modal Bukti Peminjaman (Slip) -->
+  <div id="modal-bukti" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-xl w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="printer" class="w-4 h-4 text-brand-600"></i>
+          <span>Surat Bukti Peminjaman Laboratorium</span>
+        </h3>
+        <button onclick="closeModal('modal-bukti')" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="printable-slip" class="p-6 text-slate-800 text-xs space-y-4">
+        <div class="text-center border-b-2 border-slate-900 pb-3">
+          <h2 class="text-sm font-extrabold uppercase">SMK NEGERI 1 INFORMATIKA</h2>
+          <h4 class="text-xs font-bold uppercase text-slate-700">UNIT LABORATORIUM KOMPUTER & TEKNOLOGI INFORMASI</h4>
+          <p class="text-[10px] text-slate-500">Jl. Pendidikan No. 12, Telp. (021) 555-0199 | Email: labkomputer@smk.sch.id</p>
+        </div>
+
+        <div class="text-center py-1">
+          <span class="text-xs font-bold uppercase underline">BUKTI RESMI PEMINJAMAN ALAT LABORATORIUM</span>
+          <div id="slip-tx-id" class="text-[10px] font-mono text-slate-500 mt-0.5">-</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <div><span class="text-[10px] text-slate-500 block">Peminjam:</span><span id="slip-student-name" class="font-bold text-slate-900">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">NIS / Kelas:</span><span id="slip-student-nis" class="font-semibold text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Barang:</span><span id="slip-item-name" class="font-bold text-brand-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Jumlah / Kategori:</span><span id="slip-item-qty" class="font-semibold text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Tgl Pinjam:</span><span id="slip-borrow-date" class="font-medium text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Batas Kembali:</span><span id="slip-due-date" class="font-bold text-rose-700">-</span></div>
+        </div>
+
+        <div>
+          <span class="text-[10px] text-slate-500 block">Tujuan Penggunaan:</span>
+          <p id="slip-purpose" class="italic text-slate-700 bg-white p-2 rounded border border-slate-100">-</p>
+        </div>
+
+        <div class="grid grid-cols-2 text-center pt-4 text-[11px] gap-6">
+          <div>
+            <p>Peminjam,</p>
+            <div class="h-14"></div>
+            <p id="slip-sign-student" class="font-bold underline text-slate-900">( Nama Siswa )</p>
+          </div>
+          <div>
+            <p>Petugas Lab,</p>
+            <div class="h-14"></div>
+            <p id="slip-sign-officer" class="font-bold underline text-slate-900">( Budi Santoso, S.Kom )</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button onclick="closeModal('modal-bukti')" class="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200 rounded-lg">Tutup</button>
+        <button onclick="printBuktiSlip()" class="px-4 py-1.5 text-xs font-semibold bg-brand-600 text-white rounded-lg hover:bg-brand-700 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Cetak Bukti Ini</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT ONLY REPORT -->
+  <div id="print-report-container" class="print-only p-8 bg-white text-black">
+    <div class="kop-surat">
+      <h2 class="text-base font-extrabold uppercase">PEMERINTAH DAERAH PROVINSI - DINAS PENDIDIKAN</h2>
+      <h1 class="text-lg font-black uppercase">SMK NEGERI 1 INFORMATIKA</h1>
+      <h3 class="text-sm font-bold uppercase tracking-wider">UNIT LABORATORIUM KOMPUTER & TEKNOLOGI INFORMASI</h3>
+      <p class="text-xs">Alamat: Jl. Pendidikan No. 12, Telp. (021) 555-0199, Email: labkomputer@smk.sch.id</p>
+    </div>
+
+    <div class="text-center mb-6">
+      <h2 class="text-sm font-bold uppercase underline">LAPORAN REKAPITULASI PEMINJAMAN ALAT LABORATORIUM</h2>
+      <p class="text-xs mt-1" id="print-periode-info">Periode: Semua Riwayat Transaksi</p>
+    </div>
+
+    <div class="mb-4 text-xs flex justify-between border-b pb-2">
+      <div>Dicetak Pada: <strong id="print-timestamp">-</strong></div>
+      <div>Petugas: <strong id="print-officer-name">Budi Santoso, S.Kom</strong></div>
+    </div>
+
+    <table class="w-full text-xs mb-8">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>ID Transaksi</th>
+          <th>Nama Siswa (NIS)</th>
+          <th>Barang & Jml</th>
+          <th>Tgl Pinjam</th>
+          <th>Tenggat</th>
+          <th>Tgl Kembali</th>
+          <th>Kondisi</th>
+          <th>Denda</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="print-table-body"></tbody>
+    </table>
+
+    <div class="flex justify-between text-xs mt-12 px-8">
+      <div class="text-center">
+        <p>Mengetahui,</p>
+        <p class="font-bold">Kepala Laboratorium Komputer</p>
+        <div class="h-20"></div>
+        <p class="font-bold underline">Budi Santoso, S.Kom</p>
+        <p>NIP. 198507122010011002</p>
+      </div>
+      <div class="text-center">
+        <p>Petugas Administrasi Lab,</p>
+        <div class="h-20"></div>
+        <p class="font-bold underline">Dian Safitri, A.Md</p>
+        <p>NIP. 199203152015022001</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

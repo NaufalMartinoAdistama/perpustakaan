@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Siswa | SIMPEL-LAB</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='3' width='20' height='14' rx='2' ry='2'/><line x1='8' y1='21' x2='16' y2='21'/><line x1='12' y1='17' x2='12' y2='21'/></svg>" type="image/svg+xml">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+              400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+              800: '#1e40af', 900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-blue-50/30 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- SISWA SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white text-slate-700 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto flex flex-col shadow-lg shadow-blue-900/5 border-r border-blue-100">
+      
+      <div class="h-16 flex items-center justify-between px-6 bg-gradient-to-r from-blue-50/70 to-white border-b border-blue-100">
+        <a href="#dashboard" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-lg font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
+              SIMPEL<span class="text-blue-600">LAB</span>
+            </span>
+            <span class="text-[10px] text-blue-600 block -mt-1 font-bold uppercase">Portal Siswa</span>
+          </div>
+        </a>
+        <button id="close-sidebar-btn" class="md:hidden text-slate-400 hover:text-slate-700 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-3 mx-3 my-3 rounded-2xl bg-blue-50/80 border border-blue-100 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+          SW
+        </div>
+        <div class="overflow-hidden">
+          <div id="sidebar-user-name" class="text-xs font-bold text-slate-800 truncate">Siswa Peminjam</div>
+          <div id="sidebar-user-class" class="text-[11px] text-blue-600 font-medium">Kelas Siswa</div>
+        </div>
+      </div>
+
+      <!-- Siswa Navigation Links -->
+      <nav class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5" id="sidebar-menu">
+        <a href="#dashboard" class="siswa-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/25">
+          <div class="flex items-center gap-3">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Dashboard Siswa</span>
+          </div>
+        </a>
+        <a href="#katalog" class="siswa-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="grid" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Katalog Barang Lab</span>
+          </div>
+        </a>
+        <a href="#riwayat" class="siswa-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all duration-150 text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-medium group">
+          <div class="flex items-center gap-3">
+            <i data-lucide="history" class="w-4 h-4"></i>
+            <span class="text-xs tracking-wide">Riwayat & Status</span>
+          </div>
+        </a>
+      </nav>
+
+      <div class="p-4 border-t border-blue-100 bg-blue-50/40 space-y-2">
+        <button onclick="window.authService.logout('../login.html?logout=1')" class="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 border border-slate-200/80 hover:border-rose-200 text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs">
+          <i data-lucide="log-out" class="w-4 h-4 text-rose-500"></i>
+          <span>Keluar (Logout)</span>
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 z-30 hidden md:hidden backdrop-blur-sm"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-gradient-to-br from-blue-50/30 via-sky-50/10 to-white">
+
+      <header id="top-header" class="h-16 glass-header border-b border-blue-100 sticky top-0 z-20 px-4 md:px-8 flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-3">
+          <button id="open-sidebar-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          <div>
+            <h1 id="page-title" class="text-lg font-bold text-slate-800 tracking-tight">Portal Siswa Lab</h1>
+            <p id="page-subtitle" class="text-xs text-blue-600/80 font-medium hidden sm:block">Peminjaman perangkat dan status inventaris Anda</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          
+          <!-- Student Switcher for Demo -->
+          <div class="hidden"><select id="active-student-select"></select></div>
+
+          <!-- Role Badge -->
+          <span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center gap-1.5">
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span>SISWA</span>
+          </span>
+
+          <!-- Prominent Header Logout Button -->
+          <button onclick="window.authService.logout('../login.html?logout=1')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-xs" title="Keluar dari sistem">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 md:p-8" id="main-content"></main>
+
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <!-- Modal Ajukan Pinjam -->
+  <div id="modal-pinjam" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b flex items-center justify-between bg-indigo-50">
+        <div>
+          <h3 class="text-base font-bold text-slate-800">Form Pengajuan Peminjaman Barang</h3>
+          <p class="text-xs text-slate-500">Ajukan permohonan peminjaman ke petugas lab</p>
+        </div>
+        <button onclick="closeModal('modal-pinjam')" class="text-slate-400 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-pinjam" class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Identitas Siswa</label>
+          <div class="p-2.5 bg-slate-50 border rounded-xl text-xs font-bold text-slate-800" id="pinjam-student-name">
+            -
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Barang Laboratorium <span class="text-rose-500">*</span></label>
+          <select id="pinjam-barang-id" required class="w-full px-3 py-2 text-sm border rounded-xl"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Unit</label>
+            <input type="number" id="pinjam-qty" value="1" min="1" max="3" required class="w-full px-3 py-2 text-sm border rounded-xl font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Pinjam</label>
+            <input type="date" id="pinjam-tanggal" required class="w-full px-3 py-2 text-sm border rounded-xl">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Batas Rencana Pengembalian</label>
+          <input type="date" id="pinjam-tenggat" required class="w-full px-3 py-2 text-sm border rounded-xl">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tujuan / Keperluan Peminjaman <span class="text-rose-500">*</span></label>
+          <textarea id="pinjam-keperluan" rows="2.5" required placeholder="Contoh: Praktikum Web Development UKK di Ruang Teori" class="w-full px-3 py-2 text-sm border rounded-xl"></textarea>
+        </div>
+
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
+          <strong>Perhatian:</strong> Keterlambatan dikenakan denda Rp 2.000 / hari. Jaga kondisi fisik alat sebaik mungkin.
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t">
+          <button type="button" onclick="closeModal('modal-pinjam')" class="px-4 py-2 text-sm font-semibold text-slate-600 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">Kirim Permohonan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Bukti Transaksi -->
+  <div id="modal-bukti" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div class="modal-backdrop fixed inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl max-w-xl w-full z-10 overflow-hidden">
+      <div class="px-6 py-4 border-b flex items-center justify-between bg-slate-50">
+        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="printer" class="w-4 h-4 text-indigo-600"></i>
+          <span>Surat Bukti Peminjaman Laboratorium</span>
+        </h3>
+        <button onclick="closeModal('modal-bukti')" class="text-slate-400 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="printable-slip" class="p-6 text-slate-800 text-xs space-y-4">
+        <div class="text-center border-b-2 border-slate-900 pb-3">
+          <h2 class="text-sm font-extrabold uppercase">SMK NEGERI 1 INFORMATIKA</h2>
+          <h4 class="text-xs font-bold uppercase text-slate-700">UNIT LABORATORIUM KOMPUTER & TEKNOLOGI INFORMASI</h4>
+          <p class="text-[10px] text-slate-500">Jl. Pendidikan No. 12, Telp. (021) 555-0199 | Email: labkomputer@smk.sch.id</p>
+        </div>
+
+        <div class="text-center py-1">
+          <span class="text-xs font-bold uppercase underline">BUKTI RESMI PEMINJAMAN ALAT LABORATORIUM</span>
+          <div id="slip-tx-id" class="text-[10px] font-mono text-slate-500 mt-0.5">-</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <div><span class="text-[10px] text-slate-500 block">Peminjam:</span><span id="slip-student-name" class="font-bold text-slate-900">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">NIS / Kelas:</span><span id="slip-student-nis" class="font-semibold text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Barang:</span><span id="slip-item-name" class="font-bold text-indigo-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Jumlah / Kategori:</span><span id="slip-item-qty" class="font-semibold text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Tgl Pinjam:</span><span id="slip-borrow-date" class="font-medium text-slate-800">-</span></div>
+          <div><span class="text-[10px] text-slate-500 block">Batas Kembali:</span><span id="slip-due-date" class="font-bold text-rose-700">-</span></div>
+        </div>
+
+        <div>
+          <span class="text-[10px] text-slate-500 block">Keperluan:</span>
+          <p id="slip-purpose" class="italic text-slate-700 bg-white p-2 rounded border border-slate-100">-</p>
+        </div>
+
+        <div class="grid grid-cols-2 text-center pt-4 text-[11px] gap-6">
+          <div>
+            <p>Peminjam,</p>
+            <div class="h-14"></div>
+            <p id="slip-sign-student" class="font-bold underline text-slate-900">( Nama Siswa )</p>
+          </div>
+          <div>
+            <p>Petugas Lab,</p>
+            <div class="h-14"></div>
+            <p id="slip-sign-officer" class="font-bold underline text-slate-900">( Petugas Lab )</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-slate-50 border-t flex items-center justify-end gap-2">
+        <button onclick="closeModal('modal-bukti')" class="px-3.5 py-1.5 text-xs font-semibold text-slate-600 rounded-lg">Tutup</button>
+        <button onclick="printBuktiSlip()" class="px-4 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Cetak Bukti Ini</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="siswa.js"></script>
+</body>
+</html>

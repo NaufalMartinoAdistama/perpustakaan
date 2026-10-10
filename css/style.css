@@ -1,0 +1,220 @@
+/* Custom Styles & Print Layout for Sistem Peminjaman Barang Lab Komputer */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-bg: #eff6ff;
+  --accent-gray: #f0f7ff;
+  --border-light: #dbeafe;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #1e293b;
+  background-color: #f0f7ff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism effects */
+.glass-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #dbeafe;
+}
+
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  box-shadow: 0 4px 20px -2px rgba(37, 99, 235, 0.05);
+}
+
+/* Pulse animation for pending badges */
+@keyframes soft-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+.pulse-badge {
+  animation: soft-pulse 2s infinite ease-in-out;
+}
+
+/* Smooth modal backdrop */
+.modal-backdrop {
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Card hover animation */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.08), 0 8px 10px -6px rgba(30, 64, 175, 0.04);
+}
+
+/* Toast Notification Styles */
+#toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+.toast-item {
+  pointer-events: auto;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  /* Always hide during print */
+  #sidebar,
+  #top-header,
+  #toast-container,
+  #sidebar-backdrop,
+  .no-print,
+  button {
+    display: none !important;
+  }
+
+  /* Mode 1: Printing Full Official Report */
+  body.printing-report #main-content,
+  body.printing-report .modal-backdrop,
+  body.printing-report #modal-barang,
+  body.printing-report #modal-siswa,
+  body.printing-report #modal-petugas,
+  body.printing-report #modal-pinjam,
+  body.printing-report #modal-kembali,
+  body.printing-report #modal-confirm,
+  body.printing-report #modal-bukti {
+    display: none !important;
+  }
+
+  body.printing-report #print-report-container {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Mode 2: Printing Individual Loan Slip */
+  body.printing-slip #main-content,
+  body.printing-slip #print-report-container,
+  body.printing-slip .modal-backdrop,
+  body.printing-slip #modal-barang,
+  body.printing-slip #modal-siswa,
+  body.printing-slip #modal-petugas,
+  body.printing-slip #modal-pinjam,
+  body.printing-slip #modal-kembali,
+  body.printing-slip #modal-confirm {
+    display: none !important;
+  }
+
+  body.printing-slip #modal-bukti {
+    position: static !important;
+    display: block !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  body.printing-slip #modal-bukti > div.relative {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  body.printing-slip #modal-bukti .px-6.py-4,
+  body.printing-slip #modal-bukti .px-6.py-3 {
+    display: none !important;
+  }
+
+  body.printing-slip #printable-slip {
+    display: block !important;
+    padding: 10px 0 !important;
+  }
+
+  /* Print table styling */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    border: 1px solid #333333 !important;
+    padding: 6px 8px !important;
+    color: #000000 !important;
+  }
+  thead {
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Kop Surat Print */
+  .kop-surat {
+    border-bottom: 3px double #000 !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+/* Mobile Responsive Enhancements */
+html {
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 640px) {
+  #toast-container {
+    top: 1rem !important;
+    right: 1rem !important;
+    left: 1rem !important;
+  }
+  .toast-item {
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
